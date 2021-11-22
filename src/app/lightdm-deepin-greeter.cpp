@@ -252,7 +252,7 @@ int main(int argc, char* argv[])
     }
 
     SessionBaseModel *model = new SessionBaseModel(SessionBaseModel::AuthType::LightdmType);
-    model->setAppType(AppTypeLogin);
+    model->setAppType(Login);
     GreeterWorker *worker = new GreeterWorker(model);
     QObject::connect(&appEventFilter, &AppEventFilter::userIsActive, worker, &GreeterWorker::restartResetSessionTimer);
 

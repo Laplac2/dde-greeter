@@ -229,7 +229,7 @@ void SessionBaseModel::setAuthType(const int type)
     }
     if (m_currentUser->type() == User::Default) {
         m_authProperty.AuthType = type;
-        emit authTypeChanged(AuthTypeNone);
+        emit authTypeChanged(AT_None);
     } else {
         m_authProperty.AuthType = type;
         emit authTypeChanged(type);
@@ -562,7 +562,7 @@ void SessionBaseModel::updatePrompt(const QString &prompt)
 void SessionBaseModel::updateFactorsInfo(const MFAInfoList &infoList)
 {
     qDebug() << Q_FUNC_INFO << infoList;
-    m_authProperty.AuthType = AuthTypeNone;
+    m_authProperty.AuthType = AT_None;
     switch (m_authProperty.FrameworkState) {
     case Available:
         for (const MFAInfo &info : infoList) {
@@ -571,8 +571,8 @@ void SessionBaseModel::updateFactorsInfo(const MFAInfoList &infoList)
         emit authTypeChanged(m_authProperty.AuthType);
         break;
     default:
-        m_authProperty.AuthType = AuthTypeSingle;
-        emit authTypeChanged(AuthTypeSingle);
+        m_authProperty.AuthType = AT_PAM;
+        emit authTypeChanged(AT_PAM);
         break;
     }
 }
@@ -592,7 +592,7 @@ void SessionBaseModel::updateAuthStatus(const int type, const int status, const 
         emit authStatusChanged(type, status, result);
         break;
     default:
-        emit authStatusChanged(AuthTypeSingle, status, result);
+        emit authStatusChanged(AT_PAM, status, result);
         break;
     }
 }
