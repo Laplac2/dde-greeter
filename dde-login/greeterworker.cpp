@@ -1,6 +1,6 @@
 #include "greeterworker.h"
 
-#include "authcommon.h"
+#include "auth_common.h"
 #include "keyboardmonitor.h"
 #include "userinfo.h"
 

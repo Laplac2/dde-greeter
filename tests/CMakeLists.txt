@@ -17,4 +17,4 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 add_subdirectory(dde-lock)
-add_subdirectory(lightdm-deepin-greeter)
+add_subdirectory(dde-login)

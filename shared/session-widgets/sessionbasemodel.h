@@ -1,7 +1,7 @@
 #ifndef SESSIONBASEMODEL_H
 #define SESSIONBASEMODEL_H
 
-#include "authcommon.h"
+#include "auth_common.h"
 #include "userinfo.h"
 
 #include <DSysInfo>

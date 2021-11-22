@@ -1,4 +1,4 @@
-set(BIN_NAME lightdm-deepin-greeter-test)
+set(BIN_NAME dde-login-test)
 
 aux_source_directory(. GREETER_TEST)
 
@@ -11,13 +11,13 @@ set(GREETER_TEST_SRCS
     ${WIDGETS}
     ${SESSION_WIDGETS}
     ${haweiswitchos_DBUS_SCRS}
-    ${AUTHENTICATE}
-    ${PROJECT_SOURCE_DIR}/src/lightdm-deepin-greeter/loginwindow.cpp
-    ${PROJECT_SOURCE_DIR}/src/lightdm-deepin-greeter/greeterworker.cpp
-    ${PROJECT_SOURCE_DIR}/src/lightdm-deepin-greeter/logincontent.cpp
-    ${PROJECT_SOURCE_DIR}/src/lightdm-deepin-greeter/logintipswindow.cpp
-    ${PROJECT_SOURCE_DIR}/src/lightdm-deepin-greeter/sessionwidget.cpp
-    ${PROJECT_SOURCE_DIR}/src/lightdm-deepin-greeter/resetpasswdwidget.cpp
+    ${AUTH}
+    ${PROJECT_SOURCE_DIR}/dde-login/loginwindow.cpp
+    ${PROJECT_SOURCE_DIR}/dde-login/greeterworker.cpp
+    ${PROJECT_SOURCE_DIR}/dde-login/logincontent.cpp
+    ${PROJECT_SOURCE_DIR}/dde-login/logintipswindow.cpp
+    ${PROJECT_SOURCE_DIR}/dde-login/sessionwidget.cpp
+    ${PROJECT_SOURCE_DIR}/dde-login/resetpasswdwidget.cpp
 )
 
 add_executable(${BIN_NAME}
@@ -37,10 +37,9 @@ target_include_directories(${BIN_NAME} PUBLIC
     ${QGSettings_INCLUDE_DIRS}
     ${Qt5X11Extras_INCLUDE_DIRS}
     ${Greeter_INCLUDE_DIRS}
-    ${PROJECT_SOURCE_DIR}/src/lightdm-deepin-greeter
 )
 
-target_compile_definitions(lightdm-deepin-greeter
+target_compile_definitions(dde-login
     PRIVATE ENABLE_SESSION
 )
 

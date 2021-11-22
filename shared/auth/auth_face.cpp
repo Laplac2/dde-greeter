@@ -19,9 +19,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "auth_iris.h"
+#include "auth_face.h"
 
-#include "authcommon.h"
+#include "auth_common.h"
 
 #include <QKeyEvent>
 #include <QTimer>
@@ -29,15 +29,15 @@
 
 using namespace AuthCommon;
 
-AuthIris::AuthIris(QWidget *parent)
+AuthFace::AuthFace(QWidget *parent)
     : AuthModule(parent)
     , m_aniIndex(-1)
     , m_textLabel(new DLabel(this))
 {
-    setObjectName(QStringLiteral("AuthIris"));
-    setAccessibleName(QStringLiteral("AuthIris"));
+    setObjectName(QStringLiteral("AuthFace"));
+    setAccessibleName(QStringLiteral("AuthFace"));
 
-    m_type = AT_Iris;
+    m_type = AT_Face;
 
     initUI();
     initConnections();
@@ -46,13 +46,13 @@ AuthIris::AuthIris(QWidget *parent)
 /**
  * @brief 初始化界面
  */
-void AuthIris::initUI()
+void AuthFace::initUI()
 {
     QHBoxLayout *mainLayout = new QHBoxLayout(this);
     mainLayout->setContentsMargins(27, 0, 10, 0);
     mainLayout->setSpacing(0);
     /* 文案提示 */
-    m_textLabel->setText(tr("Iris ID"));
+    m_textLabel->setText(tr("Face ID"));
     m_textLabel->setWordWrap(true);
     mainLayout->addWidget(m_textLabel, 1, Qt::AlignHCenter);
     /* 认证状态 */
@@ -65,7 +65,7 @@ void AuthIris::initUI()
 /**
  * @brief 初始化信号连接
  */
-void AuthIris::initConnections()
+void AuthFace::initConnections()
 {
     AuthModule::initConnections();
 }
@@ -73,9 +73,9 @@ void AuthIris::initConnections()
 /**
  * @brief AuthFace::reset
  */
-void AuthIris::reset()
+void AuthFace::reset()
 {
-    m_textLabel->setText(tr("Iris ID"));
+    m_textLabel->setText(tr("Face ID"));
     if (m_authStatusLabel) {
         setAuthStatusStyle(isMFA() ? LOGIN_WAIT : AUTH_LOCK);
         m_authStatusLabel->show();
@@ -88,7 +88,7 @@ void AuthIris::reset()
  * @param status
  * @param result
  */
-void AuthIris::setAuthStatus(const int state, const QString &result)
+void AuthFace::setAuthStatus(const int state, const QString &result)
 {
     m_status = state;
     switch (state) {
@@ -112,8 +112,8 @@ void AuthIris::setAuthStatus(const int state, const QString &result)
         } else if (leftTimes == 1) {
             m_textLabel->setText(tr("Verification failed, only one chance left"));
         }
-        emit authFinished(state);
         emit retryButtonVisibleChanged(true);
+        emit authFinished(state);
         break;
     }
     case AS_Cancel:
@@ -123,13 +123,13 @@ void AuthIris::setAuthStatus(const int state, const QString &result)
     case AS_Timeout:
     case AS_Error:
         setAnimationStatus(false);
-        setAuthStatusStyle(isMFA() ? LOGIN_SPINNER : AUTH_LOCK);
+        setAuthStatusStyle(isMFA() ? LOGIN_WAIT : AUTH_LOCK);
         m_textLabel->setText(result);
         m_showPrompt = true;
         break;
     case AS_Verify:
         setAnimationStatus(false);
-        setAuthStatusStyle(isMFA() ? LOGIN_WAIT : AUTH_LOCK);
+        setAuthStatusStyle(isMFA() ? LOGIN_SPINNER : AUTH_LOCK);
         m_textLabel->setText(result);
         break;
     case AS_Exception:
@@ -143,14 +143,14 @@ void AuthIris::setAuthStatus(const int state, const QString &result)
         setAuthStatusStyle(isMFA() ? LOGIN_WAIT : AUTH_LOCK);
         break;
     case AS_Started:
-        m_textLabel->setText(tr("Verify your IrisID"));
+        m_textLabel->setText(tr("Verify your FaceID"));
         break;
     case AS_Ended:
         break;
     case AS_Locked:
         setAnimationStatus(false);
         setAuthStatusStyle(isMFA() ? LOGIN_LOCK : AUTH_LOCK);
-        m_textLabel->setText(tr("IrisID locked, use password please"));
+        m_textLabel->setText(tr("FaceID locked, use password please"));
         m_showPrompt = true;
         if (DDESESSIONCC::SingleAuthFactor == m_authFactorType)
             emit retryButtonVisibleChanged(false);
@@ -169,7 +169,7 @@ void AuthIris::setAuthStatus(const int state, const QString &result)
         setAnimationStatus(false);
         setAuthStatusStyle(isMFA() ? LOGIN_WAIT : AUTH_LOCK);
         m_textLabel->setText(result);
-        qWarning() << "Error! The status of Iris Auth is wrong!" << state << result;
+        qWarning() << "Error! The status of Face Auth is wrong!" << state << result;
         break;
     }
     update();
@@ -180,7 +180,7 @@ void AuthIris::setAuthStatus(const int state, const QString &result)
  *
  * @param start
  */
-void AuthIris::setAnimationStatus(const bool start)
+void AuthFace::setAnimationStatus(const bool start)
 {
     m_aniIndex = 1;
 
@@ -196,7 +196,7 @@ void AuthIris::setAnimationStatus(const bool start)
  *
  * @param info
  */
-void AuthIris::setLimitsInfo(const LimitsInfo &info)
+void AuthFace::setLimitsInfo(const LimitsInfo &info)
 {
     AuthModule::setLimitsInfo(info);
 }
@@ -204,14 +204,14 @@ void AuthIris::setLimitsInfo(const LimitsInfo &info)
 /**
  * @brief 更新认证锁定时的文案
  */
-void AuthIris::updateUnlockPrompt()
+void AuthFace::updateUnlockPrompt()
 {
     AuthModule::updateUnlockPrompt();
     if (m_integerMinutes > 0) {
         m_textLabel->setText(tr("Please try again %n minute(s) later", "", static_cast<int>(m_integerMinutes)));
     } else {
         QTimer::singleShot(1000, this, [this] {
-            emit activeAuth(AT_Iris);
+            emit activeAuth(m_type);
         });
         qInfo() << "Waiting authentication service...";
     }
@@ -221,7 +221,7 @@ void AuthIris::updateUnlockPrompt()
 /**
  * @brief 执行动画（认证成功，认证失败，认证中...）
  */
-void AuthIris::doAnimation()
+void AuthFace::doAnimation()
 {
     if (m_status == AS_Success) {
         if (m_aniIndex > 10) {
@@ -233,20 +233,20 @@ void AuthIris::doAnimation()
     }
 }
 
-bool AuthIris::eventFilter(QObject *watched, QEvent *event)
+bool AuthFace::eventFilter(QObject *watched, QEvent *event)
 {
     if (watched == m_authStatusLabel
             && QEvent::MouseButtonRelease == event->type()
             && !m_isAuthing
             && AS_Locked != m_status
             && DDESESSIONCC::MultiAuthFactor == m_authFactorType) {
-        emit activeAuth(AT_Iris);
+        emit activeAuth(AT_Face);
     }
 
     return false;
 }
 
-void AuthIris::setAuthFactorType(AuthFactorType authFactorType)
+void AuthFace::setAuthFactorType(AuthFactorType authFactorType)
 {
     if (DDESESSIONCC::SingleAuthFactor == authFactorType)
         layout()->setContentsMargins(10, 0, 10, 0);

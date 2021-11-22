@@ -7,4 +7,4 @@ xsettingsd_conf="/etc/lightdm/deepin/xsettingsd.conf"
 if [ -e $xsettingsd_conf ]; then
     xsettingsd -c $xsettingsd_conf &
 fi
-/usr/bin/lightdm-deepin-greeter
+/usr/bin/dde-login

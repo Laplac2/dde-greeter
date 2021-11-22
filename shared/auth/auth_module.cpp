@@ -21,7 +21,7 @@
 
 #include "auth_module.h"
 
-#include "authcommon.h"
+#include "auth_common.h"
 
 #include <DHiDPIHelper>
 

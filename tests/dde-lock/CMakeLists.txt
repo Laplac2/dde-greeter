@@ -10,13 +10,10 @@ set(LOCK_TEST_SRCS
     ${WIDGETS}
     ${SESSION_WIDGETS}
     ${haweiswitchos_DBUS_SCRS}
-    ${AUTHENTICATE}
-    ${PROJECT_SOURCE_DIR}/src/dde-lock/lockframe.cpp
-    ${PROJECT_SOURCE_DIR}/src/dde-lock/lockworker.cpp
-    ${PROJECT_SOURCE_DIR}/src/dde-lock/dbus/dbuslockagent.cpp
-    ${PROJECT_SOURCE_DIR}/src/dde-lock/dbus/dbuslockfrontservice.cpp
-    ${PROJECT_SOURCE_DIR}/src/dde-lock/dbus/dbusshutdownagent.cpp
-    ${PROJECT_SOURCE_DIR}/src/dde-lock/dbus/dbusshutdownfrontservice.cpp
+    ${LOCK_DBUS}
+    ${AUTH}
+    ${PROJECT_SOURCE_DIR}/dde-lock/lockframe.cpp
+    ${PROJECT_SOURCE_DIR}/dde-lock/lockworker.cpp
 )
 
 add_executable(${BIN_NAME}
@@ -35,8 +32,6 @@ target_include_directories(${BIN_NAME} PUBLIC
     ${XCB_EWMH_INCLUDE_DIRS}
     ${Qt5X11Extras_INCLUDE_DIRS}
     ${PROJECT_BINARY_DIR}
-    ${PROJECT_SOURCE_DIR}/src/dde-lock
-    ${PROJECT_SOURCE_DIR}/src/dde-lock/dbus
 )
 
 target_link_libraries(${BIN_NAME} PRIVATE

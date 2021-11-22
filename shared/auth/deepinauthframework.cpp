@@ -1,6 +1,6 @@
 #include "deepinauthframework.h"
 
-#include "authcommon.h"
+#include "auth_common.h"
 #include "public_func.h"
 
 #include <dlfcn.h>

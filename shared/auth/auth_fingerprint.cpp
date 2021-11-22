@@ -21,7 +21,7 @@
 
 #include "auth_fingerprint.h"
 
-#include "authcommon.h"
+#include "auth_common.h"
 
 #include <QHBoxLayout>
 #include <QKeyEvent>

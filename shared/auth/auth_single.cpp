@@ -21,7 +21,7 @@
 
 #include "auth_single.h"
 
-#include "authcommon.h"
+#include "auth_common.h"
 #include "dlineeditex.h"
 
 #include <DHiDPIHelper>

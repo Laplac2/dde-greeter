@@ -1,4 +1,4 @@
-#include "authcommon.h"
+#include "auth_common.h"
 #include "deepinauthframework.h"
 
 #include <gtest/gtest.h>

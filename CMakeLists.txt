@@ -98,24 +98,30 @@ set(haweiswitchos_DBUS_SCRS
     ${CMAKE_CURRENT_BINARY_DIR}/switchos_interface.cpp
 )
 
-include_directories(${PROJECT_SOURCE_DIR}/src/global_util)
-include_directories(${PROJECT_SOURCE_DIR}/src/global_util/dbus)
-include_directories(${PROJECT_SOURCE_DIR}/src/widgets)
-include_directories(${PROJECT_SOURCE_DIR}/src/session-widgets)
-include_directories(${PROJECT_SOURCE_DIR}/src/libdde-auth)
+include_directories(${PROJECT_SOURCE_DIR}/shared/auth)
+include_directories(${PROJECT_SOURCE_DIR}/shared/global_util)
+include_directories(${PROJECT_SOURCE_DIR}/shared/global_util/dbus)
+include_directories(${PROJECT_SOURCE_DIR}/shared/widgets)
+include_directories(${PROJECT_SOURCE_DIR}/shared/session-widgets)
 include_directories(${PROJECT_SOURCE_DIR}/interface)
+include_directories(${PROJECT_SOURCE_DIR}/dde-lock)
+include_directories(${PROJECT_SOURCE_DIR}/dde-lock/dbus)
+include_directories(${PROJECT_SOURCE_DIR}/dde-login)
 
-aux_source_directory(${PROJECT_SOURCE_DIR}/src/global_util GLOBAL_UTILS)
-aux_source_directory(${PROJECT_SOURCE_DIR}/src/global_util/dbus GLOBAL_UTILS_DBUS)
-aux_source_directory(${PROJECT_SOURCE_DIR}/src/widgets WIDGETS)
-aux_source_directory(${PROJECT_SOURCE_DIR}/src/session-widgets SESSION_WIDGETS)
-aux_source_directory(${PROJECT_SOURCE_DIR}/src/libdde-auth AUTHENTICATE)
+aux_source_directory(${PROJECT_SOURCE_DIR}/shared/auth AUTH)
+aux_source_directory(${PROJECT_SOURCE_DIR}/shared/global_util GLOBAL_UTILS)
+aux_source_directory(${PROJECT_SOURCE_DIR}/shared/global_util/dbus GLOBAL_UTILS_DBUS)
+aux_source_directory(${PROJECT_SOURCE_DIR}/shared/widgets WIDGETS)
+aux_source_directory(${PROJECT_SOURCE_DIR}/shared/session-widgets SESSION_WIDGETS)
 aux_source_directory(${PROJECT_SOURCE_DIR}/interface INTERFACE)
+aux_source_directory(${PROJECT_SOURCE_DIR}/dde-lock LOCK)
+aux_source_directory(${PROJECT_SOURCE_DIR}/dde-lock/dbus LOCK_DBUS)
+aux_source_directory(${PROJECT_SOURCE_DIR}/dde-login LOGIN)
 
 set(QRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/resources.qrc
-    ${PROJECT_SOURCE_DIR}/src/widgets/widgetsimages.qrc
-    ${PROJECT_SOURCE_DIR}/src/widgets/widgetstheme.qrc
+    ${PROJECT_SOURCE_DIR}/shared/widgets/widgetsimages.qrc
+    ${PROJECT_SOURCE_DIR}/shared/widgets/widgetstheme.qrc
 )
 
 set(LOCK_SRCS
@@ -126,15 +132,10 @@ set(LOCK_SRCS
     ${WIDGETS}
     ${SESSION_WIDGETS}
     ${haweiswitchos_DBUS_SCRS}
-    ${AUTHENTICATE}
     ${INTERFACE}
-    src/app/dde-lock.cpp
-    src/dde-lock/lockframe.cpp
-    src/dde-lock/lockworker.cpp
-    src/dde-lock/dbus/dbuslockagent.cpp
-    src/dde-lock/dbus/dbuslockfrontservice.cpp
-    src/dde-lock/dbus/dbusshutdownagent.cpp
-    src/dde-lock/dbus/dbusshutdownfrontservice.cpp
+    ${LOCK}
+    ${LOCK_DBUS}
+    ${AUTH}
 )
 add_executable(dde-lock
     ${LOCK_SRCS}
@@ -176,21 +177,15 @@ set(GREETER_SRCS
     ${WIDGETS}
     ${SESSION_WIDGETS}
     ${haweiswitchos_DBUS_SCRS}
-    ${AUTHENTICATE}
     ${INTERFACE}
-    src/app/lightdm-deepin-greeter.cpp
-    src/lightdm-deepin-greeter/loginwindow.cpp
-    src/lightdm-deepin-greeter/greeterworker.cpp
-    src/lightdm-deepin-greeter/logincontent.cpp
-    src/lightdm-deepin-greeter/logintipswindow.cpp
-    src/lightdm-deepin-greeter/sessionwidget.cpp
-    src/lightdm-deepin-greeter/resetpasswdwidget.cpp
+    ${LOGIN}
+    ${AUTH}
 )
-add_executable(lightdm-deepin-greeter
+add_executable(dde-login
     ${GREETER_SRCS}
     ${QRCS}
 )
-target_include_directories(lightdm-deepin-greeter PUBLIC
+target_include_directories(dde-login PUBLIC
     ${PAM_INCLUDE_DIR}
     ${DTKWIDGET_INCLUDE_DIR}
     ${DTKCORE_INCLUDE_DIR}
@@ -201,12 +196,11 @@ target_include_directories(lightdm-deepin-greeter PUBLIC
     ${QGSettings_INCLUDE_DIRS}
     ${Qt5X11Extras_INCLUDE_DIRS}
     ${Greeter_INCLUDE_DIRS}
-    ${PROJECT_SOURCE_DIR}/src/lightdm-deepin-greeter
 )
-target_compile_definitions(lightdm-deepin-greeter
+target_compile_definitions(dde-login
     PRIVATE ENABLE_SESSION
 )
-target_link_libraries(lightdm-deepin-greeter PRIVATE
+target_link_libraries(dde-login PRIVATE
     ${Qt_LIBS}
     ${PAM_LIBRARIES}
     ${XCB_EWMH_LIBRARIES}
@@ -235,7 +229,7 @@ if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 endif ()
 
 # bin
-install(TARGETS dde-lock lightdm-deepin-greeter DESTINATION bin)
+install(TARGETS dde-lock dde-login DESTINATION bin)
 install(FILES files/deepin-greeter DESTINATION bin)
 
 file(GLOB SCRIPTS  scripts/*)
@@ -267,4 +261,4 @@ install(FILES ${CMAKE_CONFIG} DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DdeSessi
 
 # config
 dconfig_meta_files(APPID dde-lock BASE configs/dde-lock FILES configs/dde-lock/default.json)
-dconfig_meta_files(APPID lightdm-deepin-greeter BASE configs/lightdm-deepin-greeter FILES configs/lightdm-deepin-greeter/default.json)
+dconfig_meta_files(APPID dde-login BASE configs/dde-login FILES configs/dde-login/default.json)

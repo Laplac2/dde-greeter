@@ -1,6 +1,6 @@
 #include "lockworker.h"
 
-#include "authcommon.h"
+#include "auth_common.h"
 #include "sessionbasemodel.h"
 #include "userinfo.h"
 
